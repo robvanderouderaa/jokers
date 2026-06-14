@@ -1,7 +1,7 @@
 // ============================================================
 //  Jokers — app controller
 // ============================================================
-import store from "./store.js?v=7";
+import store from "./store.js?v=8";
 
 const USERS = ["Rob", "Astrid"];
 const $ = (s) => document.querySelector(s);
@@ -12,67 +12,6 @@ let me = localStorage.getItem("us_me") || null;
 let booted = false;
 let activeCard = null;
 const partner = () => (me === "Rob" ? "Astrid" : "Rob");
-
-// ============================================================
-//  REALISTIC JOKER CARD FACE (SVG)
-// ============================================================
-function jokerSVG() {
-  return `
-  <svg viewBox="0 0 300 455" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <radialGradient id="ring" cx="50%" cy="50%" r="50%">
-        <stop offset="70%" stop-color="transparent"/>
-        <stop offset="100%" stop-color="rgba(203,161,74,.10)"/>
-      </radialGradient>
-    </defs>
-
-    <!-- corner indices -->
-    <g fill="#b3122b" font-family="Cinzel Decorative, serif" font-weight="700">
-      <text x="20" y="44" font-size="30">J</text>
-      <text x="20" y="66" font-size="15">♚</text>
-      <g transform="rotate(180 150 227.5)">
-        <text x="20" y="44" font-size="30">J</text>
-        <text x="20" y="66" font-size="15">♚</text>
-      </g>
-    </g>
-
-    <!-- JOKER wordmarks -->
-    <text x="150" y="78" text-anchor="middle" fill="#26262a" font-family="Cinzel Decorative, serif" font-weight="900" font-size="26" letter-spacing="3">JOKER</text>
-    <g transform="rotate(180 150 227.5)">
-      <text x="150" y="78" text-anchor="middle" fill="#26262a" font-family="Cinzel Decorative, serif" font-weight="900" font-size="26" letter-spacing="3">JOKER</text>
-    </g>
-
-    <!-- medallion -->
-    <circle cx="150" cy="232" r="92" fill="url(#ring)"/>
-    <circle cx="150" cy="232" r="90" fill="none" stroke="#cba14a" stroke-width="1.5"/>
-    <circle cx="150" cy="232" r="83" fill="none" stroke="#b3122b" stroke-width="1" stroke-dasharray="2 4"/>
-
-    <!-- jester -->
-    <g>
-      <!-- bells -->
-      <circle cx="92"  cy="196" r="9" fill="#cba14a" stroke="#9c7a2f" stroke-width="1"/>
-      <circle cx="150" cy="176" r="9" fill="#cba14a" stroke="#9c7a2f" stroke-width="1"/>
-      <circle cx="208" cy="196" r="9" fill="#cba14a" stroke="#9c7a2f" stroke-width="1"/>
-      <!-- cap lobes -->
-      <path d="M124 236 C100 232 86 214 92 198 C108 206 120 220 132 232 Z" fill="#b3122b"/>
-      <path d="M132 232 C138 210 144 192 150 180 C156 192 162 210 168 232 Z" fill="#26262a"/>
-      <path d="M168 232 C180 220 192 206 208 198 C214 214 200 232 176 236 Z" fill="#b3122b"/>
-      <!-- face -->
-      <circle cx="150" cy="250" r="31" fill="#f7f2e6" stroke="#26262a" stroke-width="1.4"/>
-      <circle cx="139" cy="246" r="3.4" fill="#26262a"/>
-      <circle cx="161" cy="246" r="3.4" fill="#26262a"/>
-      <path d="M138 260 Q150 272 162 260" fill="none" stroke="#26262a" stroke-width="1.8" stroke-linecap="round"/>
-      <circle cx="131" cy="256" r="4" fill="#b3122b" opacity=".5"/>
-      <circle cx="169" cy="256" r="4" fill="#b3122b" opacity=".5"/>
-      <!-- ruff -->
-      <g fill="#cba14a" stroke="#9c7a2f" stroke-width=".8">
-        <circle cx="124" cy="284" r="7"/><circle cx="138" cy="289" r="7"/>
-        <circle cx="150" cy="291" r="7"/><circle cx="162" cy="289" r="7"/>
-        <circle cx="176" cy="284" r="7"/>
-      </g>
-    </g>
-  </svg>`;
-}
 
 // ============================================================
 //  LOGIN
@@ -91,7 +30,6 @@ $("#logoutBtn").addEventListener("click", () => { localStorage.removeItem("us_me
 function boot() {
   $("#hello").textContent = `Good to see you, ${me}`;
   $("#partnerName").textContent = partner();
-  $("#sheetPartner").textContent = `${partner()}'s`;
   if (booted) return; booted = true;
 
   store.subscribe("jokers", (r) => { data.jokers = r; renderJokers(); });
@@ -162,10 +100,7 @@ function renderJokers() {
 }
 
 function setActive(deck, el) {
-  if (activeCard && activeCard !== el) {
-    activeCard.classList.remove("active");
-    activeCard.querySelector(".jcard").classList.remove("flipped");
-  }
+  if (activeCard && activeCard !== el) activeCard.classList.remove("active");
   activeCard = el;
   el.classList.add("active");
   deck.classList.add("has-active");
@@ -173,7 +108,6 @@ function setActive(deck, el) {
 function clearActive(deck) {
   if (!activeCard) return;
   activeCard.classList.remove("active");
-  activeCard.querySelector(".jcard").classList.remove("flipped");
   activeCard = null;
   deck.classList.remove("has-active");
 }
@@ -181,53 +115,37 @@ function clearActive(deck) {
 function buildCard(j) {
   const el = document.createElement("div");
   el.className = "fan-card";
-  const msg = j.message || j.title || "A little favor.";
-  const art = j.from === "Rob" ? "assets/joker-red.svg" : "assets/joker-black.svg";
   el.innerHTML = `
     <div class="card-tilt">
-      <div class="jcard">
-        <div class="face face-front">
-          <img class="card-art" src="${art}?v=7" alt="Joker" draggable="false" />
-          <div class="foil"></div>
-          <div class="glint"></div>
-        </div>
-        <div class="face face-back">
-          <div class="back-suit">&#9819;</div>
-          <div class="back-msg"></div>
-          <div class="back-from"></div>
+      <div class="face face-front">
+        <img class="card-art" src="assets/card-heart.jpg?v=8" alt="Joker" draggable="false" />
+        <div class="foil"></div>
+        <div class="glint"></div>
+        <div class="card-use">
+          <span class="card-from"></span>
           <button class="use-btn">Use joker</button>
         </div>
       </div>
     </div>`;
 
-  el.querySelector(".back-msg").textContent = msg;
-  el.querySelector(".back-from").textContent = `from ${j.from} · ${timeAgo(j.createdAt)}`;
+  el.querySelector(".card-from").textContent = `from ${j.from} · ${timeAgo(j.createdAt)}`;
 
   const deck = $("#deck");
   const tilt = el.querySelector(".card-tilt");
-  const card = el.querySelector(".jcard");
   const front = el.querySelector(".face-front");
 
-  card.addEventListener("click", (e) => {
+  el.addEventListener("click", (e) => {
     e.stopPropagation();
-    if (activeCard !== el) {            // lift this card to the middle
-      setActive(deck, el);
-    } else {                            // already lifted -> flip front/back
-      card.classList.toggle("flipped");
-      if (!card.classList.contains("flipped")) {
-        card.classList.add("shine");
-        setTimeout(() => card.classList.remove("shine"), 1000);
-      }
-    }
+    if (activeCard !== el) setActive(deck, el);
   });
 
-  // tilt + foil follow pointer (only while lifted & on the front)
+  // tilt + foil follow pointer (only while lifted)
   tilt.addEventListener("pointermove", (e) => {
-    if (activeCard !== el || card.classList.contains("flipped")) return;
+    if (activeCard !== el) return;
     const r = tilt.getBoundingClientRect();
     const px = (e.clientX - r.left) / r.width - 0.5;
     const py = (e.clientY - r.top) / r.height - 0.5;
-    tilt.style.transform = `rotateY(${px * 14}deg) rotateX(${-py * 14}deg)`;
+    tilt.style.transform = `rotateY(${px * 12}deg) rotateX(${-py * 12}deg)`;
     front.style.setProperty("--mx", `${(px + 0.5) * 100}%`);
     front.style.setProperty("--my", `${(py + 0.5) * 100}%`);
   });
@@ -240,33 +158,26 @@ function buildCard(j) {
 // tap empty stage to put the lifted card back in the fan
 $("#view-jokers").addEventListener("click", () => clearActive($("#deck")));
 
-// ---- give joker ----
-$("#addJokerBtn").addEventListener("click", () => { openSheet("#jokerScrim"); setTimeout(() => $("#jMsg").focus(), 350); });
-$("#jCancel").addEventListener("click", () => closeSheet("#jokerScrim"));
-$("#jMsg").addEventListener("input", () => { $("#jCount").textContent = $("#jMsg").value.length; });
-$("#jSave").addEventListener("click", giveJoker);
+// ---- give joker (instant — one tap, no message) ----
+$("#addJokerBtn").addEventListener("click", giveJoker);
 async function giveJoker() {
-  const message = $("#jMsg").value.trim();
-  if (!message) { toast("Write the favor first ♠"); return; }
-  await store.add("jokers", { message, from: me, to: partner(), createdBy: me });
-  await store.add("log", { kind: "given", from: me, to: partner(), message });
-  $("#jMsg").value = ""; $("#jCount").textContent = "0";
-  closeSheet("#jokerScrim");
-  toast(`Joker dealt to ${partner()} ♠`);
+  await store.add("jokers", { from: me, to: partner(), createdBy: me });
+  await store.add("log", { kind: "given", from: me, to: partner() });
+  toast(`Joker dealt to ${partner()} ♥`);
 }
 
 // ---- use joker (removes it) ----
 let useTarget = null;
 function openUse(j) {
   useTarget = j;
-  $("#useText").textContent = `"${j.message || j.title}" — from ${j.from}. Using it removes the card from your hand.`;
+  $("#useText").textContent = `A joker from ${j.from}. Using it removes the card from your hand — anything goes.`;
   openSheet("#useScrim");
 }
 $("#uCancel").addEventListener("click", () => closeSheet("#useScrim"));
 $("#uConfirm").addEventListener("click", async () => {
   if (!useTarget) return;
   const j = useTarget;
-  await store.add("log", { kind: "used", from: j.from, by: me, message: j.message || j.title });
+  await store.add("log", { kind: "used", from: j.from, by: me });
   await store.remove("jokers", j.id);
   closeSheet("#useScrim"); confetti(); toast("Joker used! 🎉");
   useTarget = null;
@@ -316,8 +227,8 @@ function renderList(name) {
 function renderHistory() {
   const ev = [];
   data.log.forEach((l) => {
-    if (l.kind === "given") ev.push({ t: l.createdAt, who: l.from, html: `<b>${l.from}</b> dealt a joker to <b>${l.to}</b>: “${esc(l.message)}”` });
-    else if (l.kind === "used") ev.push({ t: l.createdAt, who: l.by, html: `<b>${l.by}</b> used a joker from <b>${l.from}</b>: “${esc(l.message)}” 🎉` });
+    if (l.kind === "given") ev.push({ t: l.createdAt, who: l.from, html: `<b>${l.from}</b> dealt a joker to <b>${l.to}</b> ♥` });
+    else if (l.kind === "used") ev.push({ t: l.createdAt, who: l.by, html: `<b>${l.by}</b> used a joker from <b>${l.from}</b> 🎉` });
   });
   data.dates.forEach((d) => ev.push({ t: d.createdAt, who: d.addedBy, html: `<b>${d.addedBy}</b> added a date idea: “${esc(d.text)}”` }));
   data.bucket.forEach((b) => ev.push({ t: b.createdAt, who: b.addedBy, html: `<b>${b.addedBy}</b> added to the bucket list: “${esc(b.text)}”` }));
