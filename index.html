@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#000000" />
+  <title>Us · Jokers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <!-- Ambient animated background -->
+  <div class="aurora">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="grain"></div>
+  </div>
+
+  <!-- ===== LOGIN GATE ===== -->
+  <div id="gate" class="gate">
+    <div class="gate-inner">
+      <div class="gate-spark">♠ ♥ ♦ ♣</div>
+      <h1 class="gate-title">Welcome back</h1>
+      <p class="gate-sub">Who's here?</p>
+      <div class="gate-picks">
+        <button class="pick" data-user="Rob">
+          <span class="pick-avatar">R</span>
+          <span class="pick-name">Rob</span>
+        </button>
+        <button class="pick" data-user="Astrid">
+          <span class="pick-avatar">A</span>
+          <span class="pick-name">Astrid</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== APP ===== -->
+  <main id="app" class="app hidden">
+    <!-- Top bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <span class="hello" id="hello">Hi</span>
+      </div>
+      <div class="topbar-right">
+        <button class="ghost-btn" id="logoutBtn" title="Switch person">⇄</button>
+      </div>
+    </header>
+
+    <!-- ===== JOKERS VIEW ===== -->
+    <section class="view view-active" id="view-jokers">
+      <div class="view-head">
+        <div class="count-wrap">
+          <span class="count-num" id="jokerCount">0</span>
+          <span class="count-label">jokers in the deck</span>
+        </div>
+        <p class="count-sub" id="jokerSplit">—</p>
+      </div>
+
+      <div class="carousel-shell">
+        <div class="carousel" id="carousel"></div>
+      </div>
+
+      <div class="carousel-dots" id="dots"></div>
+
+      <button class="fab" id="addJokerBtn" aria-label="Add joker">
+        <span>+</span>
+      </button>
+    </section>
+
+    <!-- ===== DATE IDEAS VIEW ===== -->
+    <section class="view" id="view-dates">
+      <div class="list-head">
+        <h2 class="list-title">Date Ideas</h2>
+        <span class="list-count" id="datesCount">0</span>
+      </div>
+      <div class="quick-add">
+        <input type="text" id="dateInput" placeholder="Add a date idea…" maxlength="140" />
+        <button id="dateAddBtn">Add</button>
+      </div>
+      <div class="cards-list" id="datesList"></div>
+    </section>
+
+    <!-- ===== BUCKET LIST VIEW ===== -->
+    <section class="view" id="view-bucket">
+      <div class="list-head">
+        <h2 class="list-title">Bucket List</h2>
+        <span class="list-count" id="bucketCount">0</span>
+      </div>
+      <div class="quick-add">
+        <input type="text" id="bucketInput" placeholder="Add something to do together…" maxlength="140" />
+        <button id="bucketAddBtn">Add</button>
+      </div>
+      <div class="cards-list" id="bucketList"></div>
+    </section>
+
+    <!-- ===== HISTORY VIEW ===== -->
+    <section class="view" id="view-history">
+      <div class="list-head">
+        <h2 class="list-title">History</h2>
+      </div>
+      <div class="timeline" id="timeline"></div>
+    </section>
+
+    <!-- Bottom tab bar -->
+    <nav class="tabbar">
+      <button class="tab tab-active" data-view="jokers">
+        <span class="tab-ico">🃏</span><span class="tab-txt">Jokers</span>
+      </button>
+      <button class="tab" data-view="dates">
+        <span class="tab-ico">✦</span><span class="tab-txt">Dates</span>
+      </button>
+      <button class="tab" data-view="bucket">
+        <span class="tab-ico">◎</span><span class="tab-txt">Bucket</span>
+      </button>
+      <button class="tab" data-view="history">
+        <span class="tab-ico">↻</span><span class="tab-txt">History</span>
+      </button>
+    </nav>
+  </main>
+
+  <!-- ===== ADD JOKER SHEET ===== -->
+  <div class="sheet-scrim hidden" id="jokerScrim">
+    <div class="sheet" id="jokerSheet">
+      <div class="sheet-grab"></div>
+      <h3 class="sheet-title">Give a Joker</h3>
+      <p class="sheet-hint">A favor your partner can cash in anytime.</p>
+      <label class="field-label">Title</label>
+      <input type="text" id="jTitle" placeholder="e.g. Breakfast in bed" maxlength="40" />
+      <label class="field-label">Details <span class="opt">(optional)</span></label>
+      <textarea id="jDesc" placeholder="Any conditions or sweet notes…" maxlength="200" rows="3"></textarea>
+      <div class="sheet-actions">
+        <button class="btn-secondary" id="jCancel">Cancel</button>
+        <button class="btn-primary" id="jSave">Deal it</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== REDEEM CONFIRM ===== -->
+  <div class="sheet-scrim hidden" id="redeemScrim">
+    <div class="sheet" id="redeemSheet">
+      <div class="sheet-grab"></div>
+      <h3 class="sheet-title">Cash this Joker?</h3>
+      <p class="sheet-hint" id="redeemText">—</p>
+      <div class="sheet-actions">
+        <button class="btn-secondary" id="rCancel">Not yet</button>
+        <button class="btn-primary" id="rConfirm">Redeem 🎉</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast hidden" id="toast"></div>
+
+  <!-- Confetti canvas -->
+  <canvas id="confetti" class="confetti"></canvas>
+
+  <!-- Firebase config + app. Module so it works straight from GitHub Pages. -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
