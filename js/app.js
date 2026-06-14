@@ -1,7 +1,7 @@
 // ============================================================
 //  Jokers — app controller
 // ============================================================
-import store from "./store.js?v=9";
+import store from "./store.js?v=10";
 
 const USERS = ["Rob", "Astrid"];
 const $ = (s) => document.querySelector(s);
@@ -82,6 +82,7 @@ function renderJokers() {
   const cards = mine.map((j, i) => {
     const el = buildCard(j);
     el.style.setProperty("--a", `${start + i * perCard}deg`);
+    el.dataset.z = i + 1;
     el.style.zIndex = i + 1;
     el.classList.add("pre");
     deck.appendChild(el);
@@ -100,14 +101,19 @@ function renderJokers() {
 }
 
 function setActive(deck, el) {
-  if (activeCard && activeCard !== el) activeCard.classList.remove("active");
+  if (activeCard && activeCard !== el) {
+    activeCard.classList.remove("active");
+    activeCard.style.zIndex = activeCard.dataset.z || "";
+  }
   activeCard = el;
   el.classList.add("active");
+  el.style.zIndex = "999";
   deck.classList.add("has-active");
 }
 function clearActive(deck) {
   if (!activeCard) return;
   activeCard.classList.remove("active");
+  activeCard.style.zIndex = activeCard.dataset.z || "";
   activeCard = null;
   deck.classList.remove("has-active");
 }
