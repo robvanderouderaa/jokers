@@ -14,7 +14,7 @@
 
 import { ENABLED, firebaseConfig } from "./firebase-config.js";
 
-const COLLECTIONS = ["jokers", "dates", "bucket"];
+const COLLECTIONS = ["jokers", "dates", "bucket", "log"];
 const looksConfigured = ENABLED && firebaseConfig.apiKey && firebaseConfig.apiKey !== "PASTE_HERE";
 
 let store;
