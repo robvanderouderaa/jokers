@@ -1,7 +1,7 @@
 // ============================================================
 //  Jokers — app controller
 // ============================================================
-import store from "./store.js?v=6";
+import store from "./store.js?v=7";
 
 const USERS = ["Rob", "Astrid"];
 const $ = (s) => document.querySelector(s);
@@ -10,6 +10,7 @@ const $$ = (s) => [...document.querySelectorAll(s)];
 const data = { jokers: [], dates: [], bucket: [], log: [] };
 let me = localStorage.getItem("us_me") || null;
 let booted = false;
+let activeCard = null;
 const partner = () => (me === "Rob" ? "Astrid" : "Rob");
 
 // ============================================================
@@ -83,7 +84,6 @@ function login(user) {
   setTimeout(() => { gate.classList.add("hidden"); $("#app").classList.remove("hidden"); boot(); }, 520);
 }
 $("#logoutBtn").addEventListener("click", () => { localStorage.removeItem("us_me"); location.reload(); });
-if (me && USERS.includes(me)) { $("#gate").classList.add("hidden"); $("#app").classList.remove("hidden"); boot(); }
 
 // ============================================================
 //  BOOT
@@ -122,33 +122,74 @@ function renderJokers() {
   bump($("#theirCount"), theirs.length);
 
   const deck = $("#deck");
+  activeCard = null;
+  deck.classList.remove("fan", "has-active");
   deck.innerHTML = "";
+  $("#dots").innerHTML = "";
+
   if (mine.length === 0) {
     deck.innerHTML = `<div class="empty-deck">
       <div class="glyph">J</div>
       <div>No jokers in your hand yet.</div>
       <div class="hint">When ${partner()} deals you one, it lands here.</div>
     </div>`;
-    renderDots(0); return;
+    return;
   }
-  mine.forEach((j) => deck.appendChild(buildCard(j)));
-  renderDots(mine.length);
-  trackDeck();
+
+  deck.classList.add("fan");
+  const n = mine.length;
+  const perCard = n > 1 ? Math.min(15, 74 / (n - 1)) : 0;
+  const start = -perCard * (n - 1) / 2;
+
+  const cards = mine.map((j, i) => {
+    const el = buildCard(j);
+    el.style.setProperty("--a", `${start + i * perCard}deg`);
+    el.style.zIndex = i + 1;
+    el.classList.add("pre");
+    deck.appendChild(el);
+    return el;
+  });
+
+  // spread-open animation (staggered)
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    cards.forEach((el, i) => {
+      el.style.transitionDelay = `${i * 70}ms`;
+      el.classList.remove("pre");
+      el.classList.add("fanned");
+    });
+    setTimeout(() => cards.forEach((el) => (el.style.transitionDelay = "")), n * 70 + 700);
+  }));
+}
+
+function setActive(deck, el) {
+  if (activeCard && activeCard !== el) {
+    activeCard.classList.remove("active");
+    activeCard.querySelector(".jcard").classList.remove("flipped");
+  }
+  activeCard = el;
+  el.classList.add("active");
+  deck.classList.add("has-active");
+}
+function clearActive(deck) {
+  if (!activeCard) return;
+  activeCard.classList.remove("active");
+  activeCard.querySelector(".jcard").classList.remove("flipped");
+  activeCard = null;
+  deck.classList.remove("has-active");
 }
 
 function buildCard(j) {
-  const slot = document.createElement("div");
-  slot.className = "card-slot";
+  const el = document.createElement("div");
+  el.className = "fan-card";
   const msg = j.message || j.title || "A little favor.";
-  slot.innerHTML = `
+  const art = j.from === "Rob" ? "assets/joker-red.svg" : "assets/joker-black.svg";
+  el.innerHTML = `
     <div class="card-tilt">
       <div class="jcard">
         <div class="face face-front">
-          ${jokerSVG()}
-          <div class="gold-frame"></div>
+          <img class="card-art" src="${art}?v=7" alt="Joker" draggable="false" />
           <div class="foil"></div>
           <div class="glint"></div>
-          <div class="flip-hint">tap to reveal</div>
         </div>
         <div class="face face-back">
           <div class="back-suit">&#9819;</div>
@@ -159,27 +200,30 @@ function buildCard(j) {
       </div>
     </div>`;
 
-  slot.querySelector(".back-msg").textContent = msg;
-  slot.querySelector(".back-from").textContent = `from ${j.from} · ${timeAgo(j.createdAt)}`;
+  el.querySelector(".back-msg").textContent = msg;
+  el.querySelector(".back-from").textContent = `from ${j.from} · ${timeAgo(j.createdAt)}`;
 
-  const tilt = slot.querySelector(".card-tilt");
-  const card = slot.querySelector(".jcard");
-  const front = slot.querySelector(".face-front");
+  const deck = $("#deck");
+  const tilt = el.querySelector(".card-tilt");
+  const card = el.querySelector(".jcard");
+  const front = el.querySelector(".face-front");
 
-  // flip on tap
-  card.addEventListener("click", () => {
-    card.classList.toggle("flipped");
-    if (!card.classList.contains("flipped")) {
-      card.classList.add("shine");
-      setTimeout(() => card.classList.remove("shine"), 1000);
+  card.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (activeCard !== el) {            // lift this card to the middle
+      setActive(deck, el);
+    } else {                            // already lifted -> flip front/back
+      card.classList.toggle("flipped");
+      if (!card.classList.contains("flipped")) {
+        card.classList.add("shine");
+        setTimeout(() => card.classList.remove("shine"), 1000);
+      }
     }
   });
-  card.classList.add("shine");
-  setTimeout(() => card.classList.remove("shine"), 1000);
 
-  // tilt + foil follow pointer (only when showing front)
+  // tilt + foil follow pointer (only while lifted & on the front)
   tilt.addEventListener("pointermove", (e) => {
-    if (card.classList.contains("flipped")) return;
+    if (activeCard !== el || card.classList.contains("flipped")) return;
     const r = tilt.getBoundingClientRect();
     const px = (e.clientX - r.left) / r.width - 0.5;
     const py = (e.clientY - r.top) / r.height - 0.5;
@@ -189,23 +233,12 @@ function buildCard(j) {
   });
   tilt.addEventListener("pointerleave", () => { tilt.style.transform = ""; });
 
-  // use joker
-  const use = slot.querySelector(".use-btn");
-  use.addEventListener("click", (e) => { e.stopPropagation(); openUse(j); });
-  return slot;
+  el.querySelector(".use-btn").addEventListener("click", (e) => { e.stopPropagation(); openUse(j); });
+  return el;
 }
 
-function renderDots(n) {
-  const dots = $("#dots"); dots.innerHTML = "";
-  for (let i = 0; i < n; i++) { const d = document.createElement("div"); d.className = "dot" + (i ? "" : " active"); dots.appendChild(d); }
-}
-function trackDeck() {
-  const deck = $("#deck"); let raf;
-  deck.onscroll = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(() => {
-    const idx = Math.round(deck.scrollLeft / deck.clientWidth);
-    $$("#dots .dot").forEach((d, i) => d.classList.toggle("active", i === idx));
-  }); };
-}
+// tap empty stage to put the lifted card back in the fan
+$("#view-jokers").addEventListener("click", () => clearActive($("#deck")));
 
 // ---- give joker ----
 $("#addJokerBtn").addEventListener("click", () => { openSheet("#jokerScrim"); setTimeout(() => $("#jMsg").focus(), 350); });
@@ -359,3 +392,12 @@ function timeAgo(ts) {
 function fullTime(ts) { return new Date(ts).toLocaleString(undefined, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }); }
 
 addEventListener("resize", () => { const c = $("#confetti"); c.width = innerWidth; c.height = innerHeight; });
+
+// ============================================================
+//  AUTO-RESUME  (must run last: boot() reads consts defined above)
+// ============================================================
+if (me && USERS.includes(me)) {
+  $("#gate").classList.add("hidden");
+  $("#app").classList.remove("hidden");
+  boot();
+}

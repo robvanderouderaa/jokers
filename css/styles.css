@@ -162,10 +162,28 @@ html, body {
   flex: 1; min-height: 0; perspective: 1600px; display: flex; align-items: center; position: relative;
   background: radial-gradient(46% 38% at 50% 50%, rgba(226,59,59,0.16), rgba(168,19,44,0.07) 45%, transparent 70%);
 }
-.deck { display: flex; width: 100%; height: 100%; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
-.deck::-webkit-scrollbar { display: none; }
-.card-slot { min-width: 100%; scroll-snap-align: center; display: flex; align-items: center; justify-content: center; padding: 6px 30px; }
-.card-tilt { width: 100%; max-width: 300px; aspect-ratio: 0.66; transform-style: preserve-3d; transition: transform 0.4s var(--ease); }
+/* ---- empty/loading deck keeps simple flex ---- */
+.deck { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+
+/* ---- FAN (a hand of cards) ---- */
+.deck.fan { display: block; }
+.fan-card {
+  position: absolute; top: 50%; left: 50%;
+  width: min(56vw, 220px); aspect-ratio: 0.72;
+  margin: calc(min(56vw, 220px) / 0.72 / -2) 0 0 calc(min(56vw, 220px) / -2);
+  transform-origin: 50% 138%;
+  transition: transform 0.7s var(--spring), opacity 0.5s var(--ease), filter 0.4s;
+  will-change: transform; cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+/* stacked (pre-spread) */
+.fan-card.pre { transform: rotate(0deg) translateY(70px) scale(0.84); opacity: 0; }
+/* fanned out */
+.fan-card.fanned { transform: rotate(var(--a, 0deg)) translateY(0) scale(1); opacity: 1; }
+/* one card lifted to the middle */
+.fan-card.active { transform: translateY(-7%) rotate(0deg) scale(1.32) !important; z-index: 60; transition-delay: 0s !important; }
+.deck.fan.has-active .fan-card:not(.active) { opacity: 0.32; filter: brightness(0.55) saturate(0.7); }
+
+.card-tilt { width: 100%; height: 100%; perspective: 1000px; transform-style: preserve-3d; transition: transform 0.4s var(--ease); }
 .jcard { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 0.8s var(--spring); cursor: pointer; }
 .jcard.flipped { transform: rotateY(180deg); }
 .face {
@@ -174,9 +192,8 @@ html, body {
   border: 1.5px solid var(--gold-deep);
   box-shadow: 0 30px 50px -16px rgba(0,0,0,0.92), 0 0 0 1px rgba(0,0,0,0.5);
 }
-.face-front { background: linear-gradient(155deg, #f6eed8, var(--paper) 45%, var(--paper-edge)); }
-.face-front svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-.face-front .gold-frame { position: absolute; inset: 7px; border-radius: 11px; border: 2px solid rgba(200,162,74,0.6); box-shadow: inset 0 0 0 2px rgba(255,255,255,0.4); pointer-events: none; }
+.face-front { background: #fbf8f0; }
+.card-art { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: center; display: block; padding: 3%; pointer-events: none; -webkit-user-drag: none; user-select: none; }
 .glint { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: screen; opacity: 0.9;
   background: linear-gradient(105deg, transparent 38%, rgba(255,255,255,0.65) 48%, rgba(255,247,220,0.25) 52%, transparent 62%); transform: translateX(-130%); }
 .jcard.shine .glint { animation: sweep 1s var(--ease); }
