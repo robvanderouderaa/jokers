@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#0a0a0c" />
+  <meta name="theme-color" content="#16100e" />
   <title>Jokers</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Pirata+One&family=IM+Fell+English:ital@0;1&family=Inter:wght@500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
   <div class="backdrop">
-    <div class="spotlight"></div>
+    <div class="candle"></div>
     <div class="vignette"></div>
     <div class="noise"></div>
   </div>
@@ -20,9 +20,17 @@
   <!-- ===== LOGIN GATE ===== -->
   <div id="gate" class="gate">
     <div class="gate-inner">
-      <div class="gate-suits">♠&nbsp;&nbsp;♥&nbsp;&nbsp;♦&nbsp;&nbsp;♣</div>
+      <div class="gate-chalice" aria-hidden="true">
+        <svg viewBox="0 0 80 96" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16 14 H64 L58 40 Q40 58 22 40 Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M40 50 V72" stroke="currentColor" stroke-width="3"/>
+          <path d="M24 84 H56 Q56 74 40 72 Q24 74 24 84 Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
+          <circle cx="40" cy="28" r="6" fill="currentColor"/>
+          <path d="M40 8 L43 16 H37 Z" fill="currentColor"/>
+        </svg>
+      </div>
       <h1 class="gate-title">Jokers</h1>
-      <p class="gate-sub">A private deck for two.</p>
+      <p class="gate-sub">A little cult of two.</p>
       <div class="gate-picks">
         <button class="pick" data-user="Rob"><span class="pick-mono">R</span><span class="pick-name">Rob</span></button>
         <button class="pick" data-user="Astrid"><span class="pick-mono">A</span><span class="pick-name">Astrid</span></button>
@@ -34,7 +42,7 @@
   <main id="app" class="app hidden">
     <header class="topbar">
       <span class="hello" id="hello"></span>
-      <button class="ghost-btn" id="logoutBtn" title="Switch person">⇄</button>
+      <button class="ghost-btn" id="logoutBtn" title="Switch person">&#10022;</button>
     </header>
 
     <!-- ===== JOKERS ===== -->
@@ -64,7 +72,7 @@
     <section class="view" id="view-dates">
       <div class="list-head"><h2 class="list-title">Date Ideas</h2><span class="list-count" id="datesCount">0</span></div>
       <div class="quick-add">
-        <input type="text" id="dateInput" placeholder="Somewhere to go, something to do…" maxlength="140" />
+        <input type="text" id="dateInput" placeholder="Somewhere to go, something to do&#8230;" maxlength="140" />
         <button id="dateAddBtn">Add</button>
       </div>
       <div class="cards-list" id="datesList"></div>
@@ -74,7 +82,7 @@
     <section class="view" id="view-bucket">
       <div class="list-head"><h2 class="list-title">Bucket List</h2><span class="list-count" id="bucketCount">0</span></div>
       <div class="quick-add">
-        <input type="text" id="bucketInput" placeholder="Something to do together one day…" maxlength="140" />
+        <input type="text" id="bucketInput" placeholder="Something to do together one day&#8230;" maxlength="140" />
         <button id="bucketAddBtn">Add</button>
       </div>
       <div class="cards-list" id="bucketList"></div>
@@ -82,15 +90,15 @@
 
     <!-- ===== HISTORY ===== -->
     <section class="view" id="view-history">
-      <div class="list-head"><h2 class="list-title">History</h2></div>
+      <div class="list-head"><h2 class="list-title">Chronicle</h2></div>
       <div class="timeline" id="timeline"></div>
     </section>
 
     <nav class="tabbar">
-      <button class="tab tab-active" data-view="jokers"><span class="tab-ico">♠</span><span class="tab-txt">Jokers</span></button>
-      <button class="tab" data-view="dates"><span class="tab-ico">♥</span><span class="tab-txt">Dates</span></button>
-      <button class="tab" data-view="bucket"><span class="tab-ico">♦</span><span class="tab-txt">Bucket</span></button>
-      <button class="tab" data-view="history"><span class="tab-ico">♣</span><span class="tab-txt">History</span></button>
+      <button class="tab tab-active" data-view="jokers"><span class="tab-ico">&#9819;</span><span class="tab-txt">Jokers</span></button>
+      <button class="tab" data-view="dates"><span class="tab-ico">&#9790;</span><span class="tab-txt">Dates</span></button>
+      <button class="tab" data-view="bucket"><span class="tab-ico">&#9769;</span><span class="tab-txt">Bucket</span></button>
+      <button class="tab" data-view="history"><span class="tab-ico">&#9673;</span><span class="tab-txt">Chronicle</span></button>
     </nav>
   </main>
 
@@ -98,13 +106,13 @@
   <div class="sheet-scrim hidden" id="jokerScrim">
     <div class="sheet">
       <div class="sheet-grab"></div>
-      <h3 class="sheet-title">Give a Joker</h3>
-      <p class="sheet-hint">One favor, in your own words. It lands face-down in <span id="sheetPartner">their</span> hand — they flip to read it.</p>
+      <h3 class="sheet-title">Make an Offering</h3>
+      <p class="sheet-hint">One favor, in your own words. It lands face-down in <span id="sheetPartner">their</span> hand &#8212; they flip to read it.</p>
       <textarea id="jMsg" placeholder="e.g. One breakfast in bed, no questions asked." maxlength="160" rows="3"></textarea>
       <div class="char-row"><span id="jCount">0</span>/160</div>
       <div class="sheet-actions">
         <button class="btn-secondary" id="jCancel">Cancel</button>
-        <button class="btn-primary" id="jSave">Deal it ♠</button>
+        <button class="btn-primary" id="jSave">Deal it &#9819;</button>
       </div>
     </div>
   </div>
@@ -113,11 +121,11 @@
   <div class="sheet-scrim hidden" id="useScrim">
     <div class="sheet">
       <div class="sheet-grab"></div>
-      <h3 class="sheet-title">Use this Joker?</h3>
-      <p class="sheet-hint" id="useText">—</p>
+      <h3 class="sheet-title">Cash this Joker?</h3>
+      <p class="sheet-hint" id="useText">&#8212;</p>
       <div class="sheet-actions">
         <button class="btn-secondary" id="uCancel">Keep it</button>
-        <button class="btn-primary" id="uConfirm">Use it 🎉</button>
+        <button class="btn-primary" id="uConfirm">Use it &#127881;</button>
       </div>
     </div>
   </div>

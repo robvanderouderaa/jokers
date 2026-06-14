@@ -151,7 +151,7 @@ function buildCard(j) {
           <div class="flip-hint">tap to reveal</div>
         </div>
         <div class="face face-back">
-          <div class="back-suit">♠</div>
+          <div class="back-suit">&#9819;</div>
           <div class="back-msg"></div>
           <div class="back-from"></div>
           <button class="use-btn">Use joker</button>
