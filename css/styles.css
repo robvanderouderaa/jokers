@@ -3,25 +3,25 @@
    oil-dark storybook · flat painterly buttons · 3D only on cards
    ============================================================ */
 :root {
-  --bg: #120f14;
-  --bg2: #1b1620;
-  --bone: #ece0c6;
-  --bone-dim: rgba(236, 224, 198, 0.62);
-  --bone-faint: rgba(236, 224, 198, 0.34);
-  --line: rgba(236, 224, 198, 0.12);
-  --line-2: rgba(236, 224, 198, 0.24);
-  --panel: rgba(28, 20, 30, 0.55);
-  --panel-2: rgba(40, 30, 44, 0.7);
+  --bg: #15080a;
+  --bg2: #260d12;
+  --bone: #f0e3c8;
+  --bone-dim: rgba(240, 227, 200, 0.64);
+  --bone-faint: rgba(240, 227, 200, 0.36);
+  --line: rgba(240, 227, 200, 0.12);
+  --line-2: rgba(240, 227, 200, 0.24);
+  --panel: rgba(48, 14, 20, 0.5);
+  --panel-2: rgba(66, 18, 26, 0.66);
 
-  --crimson: #9d2436;
-  --crimson-bright: #c43a45;
-  --blood: #531320;
-  --gold: #c8a24a;
-  --gold-soft: #e6cd8e;
+  --crimson: #a8132c;
+  --crimson-bright: #e23b3b;
+  --blood: #6b0f1c;
+  --gold: #d4ab4e;
+  --gold-soft: #f1d791;
   --gold-deep: #8a6a25;
   --teal: #4ea394;
   --teal-deep: #1f3d3a;
-  --candle: #e8852e;
+  --candle: #f0883a;
 
   --outline: #0c0810;
   --paper: #efe6cf;
@@ -50,10 +50,11 @@ html, body {
 .candle {
   position: absolute; inset: 0;
   background:
-    radial-gradient(85% 55% at 50% -8%, rgba(232,133,46,0.20), rgba(157,36,54,0.12) 34%, transparent 60%),
-    radial-gradient(70% 50% at 18% 115%, rgba(78,163,148,0.14), transparent 60%),
-    radial-gradient(80% 60% at 88% 108%, rgba(83,19,32,0.4), transparent 62%),
-    linear-gradient(180deg, #1a141d 0%, #120f14 55%, #0d0a10 100%);
+    radial-gradient(90% 60% at 50% -10%, rgba(240,136,58,0.26), rgba(200,24,52,0.20) 36%, transparent 64%),
+    radial-gradient(75% 55% at 14% 112%, rgba(120,16,30,0.55), transparent 60%),
+    radial-gradient(85% 60% at 90% 110%, rgba(168,19,44,0.42), transparent 62%),
+    radial-gradient(60% 45% at 50% 50%, rgba(90,10,22,0.35), transparent 70%),
+    linear-gradient(180deg, #320f15 0%, #1c0a0e 52%, #0e0507 100%);
   animation: flicker 6s ease-in-out infinite;
 }
 @keyframes flicker { 0%,100% { opacity: 1; } 42% { opacity: 0.88; } 68% { opacity: 0.96; } }
@@ -90,7 +91,7 @@ html, body {
 .gate-chalice svg { width: 100%; height: auto; display: block; }
 .gate-title {
   font-family: "Pirata One", system-ui, cursive; font-size: 66px; line-height: 0.95; letter-spacing: 0.02em;
-  color: var(--bone); text-shadow: 0 2px 24px rgba(196,58,69,0.45), 0 1px 0 var(--blood);
+  color: var(--bone); text-shadow: 0 0 40px rgba(226,59,59,0.6), 0 2px 0 var(--blood), 0 3px 18px rgba(168,19,44,0.7);
 }
 .gate-sub { font-style: italic; font-size: 21px; color: var(--bone-dim); margin-top: 6px; }
 .gate-picks { display: flex; gap: 14px; margin-top: 40px; }
@@ -157,7 +158,10 @@ html, body {
 .stat-div { width: 1px; background: linear-gradient(var(--line), transparent); margin: 10px 0; }
 
 /* ===================== STAGE / DECK (3D lives here) ===================== */
-.stage { flex: 1; min-height: 0; perspective: 1600px; display: flex; align-items: center; }
+.stage {
+  flex: 1; min-height: 0; perspective: 1600px; display: flex; align-items: center; position: relative;
+  background: radial-gradient(46% 38% at 50% 50%, rgba(226,59,59,0.16), rgba(168,19,44,0.07) 45%, transparent 70%);
+}
 .deck { display: flex; width: 100%; height: 100%; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
 .deck::-webkit-scrollbar { display: none; }
 .card-slot { min-width: 100%; scroll-snap-align: center; display: flex; align-items: center; justify-content: center; padding: 6px 30px; }
@@ -182,7 +186,7 @@ html, body {
 .flip-hint { position: absolute; bottom: 9px; left: 0; right: 0; text-align: center; font-family: "Inter", sans-serif; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(0,0,0,0.4); pointer-events: none; }
 .face-back {
   transform: rotateY(180deg);
-  background: radial-gradient(120% 80% at 50% 0%, #2a1a18, #1c1210 60%, #140c0a);
+  background: radial-gradient(120% 80% at 50% 0%, #5a121e, #2a0a10 58%, #160709);
   display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px 20px; text-align: center; gap: 16px;
 }
 .face-back::before {

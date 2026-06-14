@@ -1,7 +1,7 @@
 // ============================================================
 //  Jokers — app controller
 // ============================================================
-import store from "./store.js?v=5";
+import store from "./store.js?v=6";
 
 const USERS = ["Rob", "Astrid"];
 const $ = (s) => document.querySelector(s);
@@ -9,6 +9,7 @@ const $$ = (s) => [...document.querySelectorAll(s)];
 
 const data = { jokers: [], dates: [], bucket: [], log: [] };
 let me = localStorage.getItem("us_me") || null;
+let booted = false;
 const partner = () => (me === "Rob" ? "Astrid" : "Rob");
 
 // ============================================================
@@ -87,7 +88,6 @@ if (me && USERS.includes(me)) { $("#gate").classList.add("hidden"); $("#app").cl
 // ============================================================
 //  BOOT
 // ============================================================
-let booted = false;
 function boot() {
   $("#hello").textContent = `Good to see you, ${me}`;
   $("#partnerName").textContent = partner();

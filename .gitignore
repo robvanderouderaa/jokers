@@ -1,2 +1,7 @@
 node_modules/
 .DS_Store
+shots/
+*.mjs
+package.json
+package-lock.json
+firebase-debug.log
