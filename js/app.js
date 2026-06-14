@@ -1,7 +1,7 @@
 // ============================================================
 //  Jokers — app controller
 // ============================================================
-import store from "./store.js?v=8";
+import store from "./store.js?v=9";
 
 const USERS = ["Rob", "Astrid"];
 const $ = (s) => document.querySelector(s);
@@ -305,10 +305,5 @@ function fullTime(ts) { return new Date(ts).toLocaleString(undefined, { month: "
 addEventListener("resize", () => { const c = $("#confetti"); c.width = innerWidth; c.height = innerHeight; });
 
 // ============================================================
-//  AUTO-RESUME  (must run last: boot() reads consts defined above)
+//  No auto-resume: always ask who's here on open/refresh.
 // ============================================================
-if (me && USERS.includes(me)) {
-  $("#gate").classList.add("hidden");
-  $("#app").classList.remove("hidden");
-  boot();
-}

@@ -12,7 +12,7 @@
 //  Docs always carry: id, createdAt (ms number), + their fields.
 // ============================================================
 
-import { ENABLED, firebaseConfig } from "./firebase-config.js?v=8";
+import { ENABLED, firebaseConfig } from "./firebase-config.js?v=9";
 
 const COLLECTIONS = ["jokers", "dates", "bucket", "log"];
 const looksConfigured = ENABLED && firebaseConfig.apiKey && firebaseConfig.apiKey !== "PASTE_HERE";
