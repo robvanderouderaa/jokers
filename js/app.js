@@ -1,7 +1,7 @@
 // ============================================================
 //  Jokers — app controller
 // ============================================================
-import store from "./store.js";
+import store from "./store.js?v=5";
 
 const USERS = ["Rob", "Astrid"];
 const $ = (s) => document.querySelector(s);
